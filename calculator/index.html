@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Risk & Reward Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="max-w-3xl mx-auto p-6">
+      <header class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-blue-400">
+            <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.5"></rect>
+            <path d="M7 14l3-3 3 3 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <h1 class="text-2xl font-semibold">Trading Risk & Reward</h1>
+        </div>
+        <div class="text-sm text-gray-400">Local • Dark</div>
+      </header>
+
+      <main class="grid gap-6 md:grid-cols-2">
+        <section class="p-4 bg-gray-800 rounded">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="btn px-3 py-1 bg-gray-700 rounded cursor-pointer" id="buyBtn">BUY</div>
+            <div class="btn px-3 py-1 bg-transparent border border-gray-700 rounded cursor-pointer" id="sellBtn">SELL</div>
+            <div class="ml-auto text-sm text-gray-400">Quick keyboard: Enter values</div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs text-gray-400">Entry Price</label>
+              <input id="entry" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400">Stop Loss</label>
+              <input id="stop" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400">Target Price</label>
+              <input id="target" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400">Quantity / Lot Size</label>
+              <input id="qty" type="number" step="1" class="w-full p-2 bg-gray-900 rounded" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-gray-400">Brokerage (fixed ₹)</label>
+                <input id="brokerFixed" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400">Brokerage (%)</label>
+                <input id="brokerPerc" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-gray-400">Capital (for recommended size)</label>
+                <input id="capital" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+              </div>
+              <div>
+                <label class="block text-xs text-gray-400">Risk % per trade</label>
+                <input id="riskPct" type="number" step="any" class="w-full p-2 bg-gray-900 rounded" />
+              </div>
+            </div>
+
+              <div class="flex gap-2">
+                <button id="reset" class="btn px-3 py-2 flex items-center gap-2" title="Reset inputs">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12a9 9 0 1 0-2.6 6.12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Reset
+                </button>
+                <button id="save" class="btn px-3 py-2 flex items-center gap-2" title="Save inputs locally">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 21H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3l2-2h4l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Save
+                </button>
+                <button id="exportBtn" class="btn px-3 py-2 flex items-center gap-2" title="Export inputs/results to JSON file">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Export
+                </button>
+              </div>
+          </div>
+        </section>
+
+        <section class="p-4 bg-gray-800 rounded">
+          <h2 class="text-lg mb-3">Results</h2>
+          <div class="space-y-3">
+            <div class="p-3 bg-gray-900 rounded">
+              <div class="text-sm text-gray-400">If SL Hits → Loss</div>
+              <div id="loss" class="text-2xl text-red-400">-</div>
+            </div>
+            <div class="p-3 bg-gray-900 rounded">
+              <div class="text-sm text-gray-400">If Target Hits → Profit</div>
+              <div id="profit" class="text-2xl text-green-400">-</div>
+            </div>
+            <div class="p-3 bg-gray-900 rounded">
+              <div class="text-sm text-gray-400">Risk-Reward Ratio</div>
+              <div id="rr" class="text-2xl">-</div>
+            </div>
+
+            <div class="p-3 bg-gray-900 rounded">
+              <div class="text-sm text-gray-400">Recommended Quantity</div>
+              <div id="recQty" class="text-2xl">-</div>
+            </div>
+
+            <div class="mt-4">
+              <canvas id="rrChart" height="120"></canvas>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

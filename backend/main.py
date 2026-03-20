@@ -4,6 +4,8 @@ from fastapi.responses import PlainTextResponse, FileResponse
 from sqlalchemy.orm import Session
 from . import db, crud, schemas, analytics
 import os
+import uvicorn
+from pathlib import Path
 
 app = FastAPI(title="Trading Dashboard API")
 
@@ -133,4 +135,13 @@ def import_csv(file: UploadFile = File(...), db_session: Session = Depends(get_d
 
 @app.get("/")
 def root():
+    # If frontend/index.html exists, serve it for convenience when running locally
+    index_path = Path(__file__).resolve().parent.parent / "frontend" / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path), media_type="text/html")
     return {"msg": "Trading Dashboard API. See /api"}
+
+
+if __name__ == "__main__":
+    # Run the app on localhost for local development
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
