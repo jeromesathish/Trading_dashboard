@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Trading Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    <div class="container mx-auto p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-semibold">Trading Dashboard</h1>
+        <div class="space-x-2">
+          <button id="nav-dashboard" class="btn">Dashboard</button>
+          <button id="nav-newtrade" class="btn">New Trade</button>
+          <button id="nav-history" class="btn">History</button>
+          <button id="nav-settings" class="btn">Settings</button>
+        </div>
+      </div>
+
+      <div id="app"></div>
+    </div>
+
+    <script>
+      const API = 'http://127.0.0.1:8000/api'
+    </script>
+    <script src="app.js"></script>
+  </body>
+  <style>
+    .btn{background:#111827;padding:0.5rem 0.75rem;border-radius:6px}
+  </style>
+</html>
